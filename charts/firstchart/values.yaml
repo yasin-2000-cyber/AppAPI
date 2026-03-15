@@ -11,7 +11,7 @@ service:
   targetPort: 8000
 
 app:
-  message: "connected successfully"
+  message: "connected to DB successfully"
 
 postgresql:
   enabled: true
