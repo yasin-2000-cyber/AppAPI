@@ -3,3 +3,19 @@ __pycache__/
 .venv/
 charts/*.tgz
 .env
+# Helm packaged charts
+charts/firstchart/*.tgz
+
+# Helm dependency artifacts
+charts/firstchart/charts/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+env/
+
+# OS/editor
+.DS_Store
+.idea/
+.vscode/
