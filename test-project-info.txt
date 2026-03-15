@@ -1,0 +1,5 @@
+https://github.com/yasin-2000-cyber/AppAPI.git
+
+helm push firstchart-$version.tgz oci://registry-1.docker.io/yasin313
+
+oci://registry-1.docker.io/yasin313
