@@ -86,32 +86,42 @@ jobs:
           image_name = os.environ["IMAGE_NAME"]
 
           chart_text = chart_file.read_text()
-
           chart_text = re.sub(r'(?m)^version:\s*.*$', f'version: {chart_version}', chart_text)
           chart_text = re.sub(r'(?m)^appVersion:\s*.*$', f'appVersion: "{app_version}"', chart_text)
-
           chart_file.write_text(chart_text)
 
           values_text = values_file.read_text()
-
-          values_text = re.sub(
-              r'(?m)^(\s*repository:\s*).*$',
-              rf'\1{image_name}',
-              values_text,
-              count=1
-          )
-          values_text = re.sub(
-              r'(?m)^(\s*tag:\s*).*$',
-              rf'\1"{image_tag}"',
-              values_text,
-              count=1
-          )
-
+          values_text = re.sub(r'(?m)^(\s*repository:\s*).*$',
+                               rf'\1{image_name}',
+                               values_text,
+                               count=1)
+          values_text = re.sub(r'(?m)^(\s*tag:\s*).*$',
+                               rf'\1"{image_tag}"',
+                               values_text,
+                               count=1)
           values_file.write_text(values_text)
           PY
 
       - name: Build Helm dependencies
         run: helm dependency build ${{ env.CHART_DIR }}
+
+      - name: Unpack everything inside charts directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHARTS_PATH="${{ env.CHART_DIR }}/charts"
+
+          if [ -d "$CHARTS_PATH" ]; then
+            shopt -s nullglob
+            for pkg in "$CHARTS_PATH"/*.tgz; do
+              echo "Extracting $pkg into $CHARTS_PATH"
+              tar -xzf "$pkg" -C "$CHARTS_PATH"
+            done
+            echo "Contents after extraction:"
+            ls -la "$CHARTS_PATH"
+          else
+            echo "No charts directory found at $CHARTS_PATH"
+          fi
 
       - name: Package Helm chart
         run: |
