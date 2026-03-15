@@ -1,0 +1,44 @@
+replicaCount: 1
+
+image:
+  repository: yasin313/appapi
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+
+app:
+  message: "connected successfully"
+
+env:
+  POSTGRES_HOST: firstchart-postgresql
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: appdb
+  POSTGRES_USER: appuser
+  POSTGRES_PASSWORD: apppass
+
+  REDIS_HOST: firstchart-redis-master
+  REDIS_PORT: "6379"
+
+postgresql:
+  enabled: true
+  auth:
+    username: appuser
+    password: apppass
+    database: appdb
+
+redis:
+  enabled: true
+  auth:
+    enabled: false
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
