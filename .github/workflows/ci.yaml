@@ -64,6 +64,11 @@ jobs:
       - name: Set up Helm
         uses: azure/setup-helm@v4
 
+      - name: Add Helm repositories
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo update
+
       - name: Update chart and values versions
         env:
           CHART_VERSION: ${{ needs.docker.outputs.chart_version }}
@@ -91,14 +96,18 @@ jobs:
           chart_file.write_text(chart_text)
 
           values_text = values_file.read_text()
-          values_text = re.sub(r'(?m)^(\s*repository:\s*).*$',
-                               rf'\1{image_name}',
-                               values_text,
-                               count=1)
-          values_text = re.sub(r'(?m)^(\s*tag:\s*).*$',
-                               rf'\1"{image_tag}"',
-                               values_text,
-                               count=1)
+          values_text = re.sub(
+              r'(?m)^(\s*repository:\s*).*$',
+              rf'\1{image_name}',
+              values_text,
+              count=1
+          )
+          values_text = re.sub(
+              r'(?m)^(\s*tag:\s*).*$',
+              rf'\1"{image_tag}"',
+              values_text,
+              count=1
+          )
           values_file.write_text(values_text)
           PY
 
@@ -117,10 +126,7 @@ jobs:
               echo "Extracting $pkg into $CHARTS_PATH"
               tar -xzf "$pkg" -C "$CHARTS_PATH"
             done
-            echo "Contents after extraction:"
             ls -la "$CHARTS_PATH"
-          else
-            echo "No charts directory found at $CHARTS_PATH"
           fi
 
       - name: Package Helm chart
@@ -141,10 +147,3 @@ jobs:
         run: |
           helm push dist/${{ env.CHART_NAME }}-${{ needs.docker.outputs.chart_version }}.tgz \
             oci://registry-1.docker.io/yasin313
-
-      - name: Show published artifacts
-        run: |
-          echo "Docker image pushed first:"
-          echo "${{ env.IMAGE_NAME }}:${{ needs.docker.outputs.image_tag }}"
-          echo "Then chart pushed:"
-          echo "oci://registry-1.docker.io/yasin313/${{ env.CHART_NAME }}:${{ needs.docker.outputs.chart_version }}"
