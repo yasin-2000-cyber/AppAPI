@@ -15,6 +15,8 @@ app:
 
 postgresql:
   enabled: true
+  image:
+    tag: 18.5.6
   auth:
     username: appuser
     password: apppass
@@ -26,6 +28,8 @@ postgresql:
 
 redis:
   enabled: true
+  image:
+    tag: 25.3.2
   architecture: standalone
   auth:
     enabled: false
