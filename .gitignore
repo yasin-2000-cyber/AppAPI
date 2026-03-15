@@ -1,13 +1,8 @@
 __pycache__/
 *.pyc
 .venv/
-charts/*.tgz
 .env
-# Helm packaged charts
-charts/firstchart/*.tgz
 
-# Helm dependency artifacts
-charts/firstchart/charts/
 
 # Python
 __pycache__/
