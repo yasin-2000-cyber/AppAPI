@@ -93,7 +93,7 @@ jobs:
 
       - name: Update Helm dependencies
         # This fetches the .tgz files into charts/ so helm package finds them
-        run: helm dependency update ${{ env.CHART_DIR }}
+        run: helm dependency build ${{ env.CHART_DIR }}
 
       - name: Package Helm chart
         run: |
