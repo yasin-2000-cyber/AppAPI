@@ -17,10 +17,10 @@ app:
 
 postgresql:
   enabled: true
-  image:
-    registry: docker.io
-    repository: bitnamilegacy/postgresql
-    tag: "17.2.0-debian-12-r0"
+  # -- image:
+    #registry: docker.io
+    #repository: bitnamilegacy/postgresql
+    #tag: "17.2.0-debian-12-r0" 
   auth:
     username: appuser
     password: apppass
@@ -34,10 +34,10 @@ postgresql:
 
 redis:
   enabled: true
-  image:
-    registry: docker.io
-    repository: bitnamilegacy/redis
-    tag: "7.4.1-debian-12-r2"
+  #image:
+   # registry: docker.io
+    #repository: bitnamilegacy/redis
+    #tag: "7.4.1-debian-12-r2"
   architecture: standalone
   auth:
     enabled: false
