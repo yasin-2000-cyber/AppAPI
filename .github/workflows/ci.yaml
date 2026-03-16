@@ -46,8 +46,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: ./app
-          file: ./app/Dockerfile
+          context: ${{ env.APP_DIR }}
+          file: ${{ env.APP_DIR }}/Dockerfile
           push: true
           tags: ${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.image_tag }}
 
@@ -68,7 +68,7 @@ jobs:
             --username "${{ secrets.DOCKERHUB_USERNAME }}" \
             --password-stdin
 
-      - name: Update app image values only
+      - name: Update top-level app image in values.yaml
         env:
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
           IMAGE_TAG: ${{ needs.docker.outputs.image_tag }}
@@ -91,27 +91,41 @@ jobs:
               raise SystemExit("Could not find top-level image block in values.yaml")
 
           block = match.group(1)
-          block = re.sub(r'(?m)^(\s*repository:\s*).*$',
-                         rf'\1{image_name}',
-                         block)
-          block = re.sub(r'(?m)^(\s*tag:\s*).*$',
-                         rf'\1"{image_tag}"',
-                         block)
+          block = re.sub(
+              r'(?m)^(\s*repository:\s*).*$',
+              rf'\1{image_name}',
+              block
+          )
+          block = re.sub(
+              r'(?m)^(\s*tag:\s*).*$',
+              rf'\1"{image_tag}"',
+              block
+          )
 
           text = text[:match.start(1)] + block + text[match.end(1):]
           values_file.write_text(text)
           PY
 
+      - name: Clean previous Helm dependency artifacts
+        run: |
+          rm -f "${{ env.CHART_DIR }}/Chart.lock"
+          rm -rf "${{ env.CHART_DIR }}/charts"
+          mkdir -p "${{ env.CHART_DIR }}/charts"
+
       - name: Build Helm dependencies
         run: |
-          rm -f ${{ env.CHART_DIR }}/Chart.lock
-          helm dependency build ${{ env.CHART_DIR }}
+          helm dependency build "${{ env.CHART_DIR }}"
+          ls -lah "${{ env.CHART_DIR }}/charts"
+
+      - name: Verify Helm dependencies exist
+        run: |
+          test -f "${{ env.CHART_DIR }}/charts/postgresql-18.5.6.tgz"
+          test -f "${{ env.CHART_DIR }}/charts/redis-25.3.2.tgz"
 
       - name: Package Helm chart
         run: |
           mkdir -p dist
-          helm package ${{ env.CHART_DIR }} \
-            --dependency-update \
+          helm package "${{ env.CHART_DIR }}" \
             --version "${{ needs.docker.outputs.chart_version }}" \
             --app-version "${{ needs.docker.outputs.app_version }}" \
             --destination dist
