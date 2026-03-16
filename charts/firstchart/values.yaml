@@ -16,7 +16,11 @@ app:
 postgresql:
   enabled: true
   image:
-    tag: 18.5.6
+    registry: docker.io
+    repository: bitnamilegacy/postgresql
+  # For chart 18.5.2, the default app version is 17.2.0. 
+  # You should use an "immutable" tag found in the legacy repo.
+    tag: 17.2.0-debian-12-r0
   auth:
     username: appuser
     password: apppass
@@ -29,7 +33,10 @@ postgresql:
 redis:
   enabled: true
   image:
-    tag: 25.3.2
+    registry: docker.io
+    repository: bitnamilegacy/redis
+  # Example: Use a stable versioned tag from the legacy repo
+    tag: 7.4.1-debian-12-r2
   architecture: standalone
   auth:
     enabled: false

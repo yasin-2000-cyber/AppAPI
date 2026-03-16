@@ -9,8 +9,8 @@ appVersion: "1.0.0"
 
 dependencies:
   - name: postgresql
-    version: 18.5.6
-    repository: https://charts.bitnami.com/bitnami
+    version: 17.2.0-debian-12-r0 
+    repository: bitnamilegacy/postgresql
   - name: redis
-    version: 25.3.2
-    repository: https://charts.bitnami.com/bitnami
+    version: 7.4.1-debian-12-r2 
+    repository:  bitnamilegacy/redis
