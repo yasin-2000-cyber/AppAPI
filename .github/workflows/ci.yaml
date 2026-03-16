@@ -73,8 +73,8 @@ jobs:
           image_name = os.environ["IMAGE_NAME"]
           image_tag = os.environ["IMAGE_TAG"]
 
-          image_block_pattern = r'(?ms)(^image:\n(?:^[ \t].*\n)*)'
-          match = re.search(image_block_pattern, text)
+          pattern = r'(?ms)(^image:\n(?:^[ \t].*\n)*)'
+          match = re.search(pattern, text)
           if not match:
               raise SystemExit("Could not find top-level image block in values.yaml")
 
@@ -97,6 +97,7 @@ jobs:
         run: |
           mkdir -p dist
           helm package ${{ env.CHART_DIR }} \
+            --dependency-update \
             --version "${{ steps.meta.outputs.chart_version }}" \
             --app-version "${{ steps.meta.outputs.app_version }}" \
             --destination dist
