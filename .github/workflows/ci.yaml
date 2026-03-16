@@ -43,6 +43,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Log in to Helm OCI registry
+        # This login is CRITICAL for pulling Bitnami OCI charts
         run: |
           echo "${{ secrets.DOCKERHUB_TOKEN }}" | helm registry login registry-1.docker.io \
             --username "${{ secrets.DOCKERHUB_USERNAME }}" \
@@ -91,13 +92,13 @@ jobs:
           PY
 
       - name: Update Helm dependencies
-        # This fixes the "missing in charts/ directory" error by pulling OCI archives
+        # This downloads the sub-charts into the 'charts/' folder
         run: helm dependency update ${{ env.CHART_DIR }}
 
       - name: Package Helm chart
         run: |
           mkdir -p dist
-          # Dependency update is removed here as it was handled in the previous step
+          # DO NOT include --dependency-update here to prevent CI re-fetch errors
           helm package ${{ env.CHART_DIR }} \
             --version "${{ steps.meta.outputs.chart_version }}" \
             --app-version "${{ steps.meta.outputs.app_version }}" \
@@ -105,6 +106,5 @@ jobs:
 
       - name: Push Helm chart to OCI
         run: |
-          # Pushing your packaged chart to your Docker Hub OCI repo
           helm push "dist/${{ env.CHART_NAME }}-${{ steps.meta.outputs.chart_version }}.tgz" \
             oci://registry-1.docker.io/yasin313
