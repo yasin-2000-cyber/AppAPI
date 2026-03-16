@@ -64,10 +64,11 @@ jobs:
       - name: Set up Helm
         uses: azure/setup-helm@v4
 
-      - name: Add Helm repositories
+      - name: Login to Docker Hub OCI registry (for Bitnami dependencies)
         run: |
-          helm repo add bitnami https://charts.bitnami.com/bitnami
-          helm repo update
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | helm registry login registry-1.docker.io \
+            --username "${{ secrets.DOCKERHUB_USERNAME }}" \
+            --password-stdin
 
       - name: Update chart and values versions
         env:
@@ -111,7 +112,7 @@ jobs:
           values_file.write_text(values_text)
           PY
 
-      - name: Build Helm dependencies
+      - name: Build Helm dependencies (OCI)
         run: helm dependency build ${{ env.CHART_DIR }}
 
       - name: Unpack everything inside charts directory
@@ -137,7 +138,7 @@ jobs:
             --app-version "${{ needs.docker.outputs.app_version }}" \
             --destination dist
 
-      - name: Log in to Docker Hub OCI registry
+      - name: Log in to Docker Hub OCI registry (push chart)
         run: |
           echo "${{ secrets.DOCKERHUB_TOKEN }}" | helm registry login registry-1.docker.io \
             --username "${{ secrets.DOCKERHUB_USERNAME }}" \
