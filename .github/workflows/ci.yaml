@@ -43,7 +43,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Log in to Helm OCI registry
-        # This login is CRITICAL for pulling Bitnami OCI charts
+        # This login must happen BEFORE the dependency update step
         run: |
           echo "${{ secrets.DOCKERHUB_TOKEN }}" | helm registry login registry-1.docker.io \
             --username "${{ secrets.DOCKERHUB_USERNAME }}" \
@@ -92,13 +92,13 @@ jobs:
           PY
 
       - name: Update Helm dependencies
-        # This downloads the sub-charts into the 'charts/' folder
+        # This fetches the .tgz files into charts/ so helm package finds them
         run: helm dependency update ${{ env.CHART_DIR }}
 
       - name: Package Helm chart
         run: |
           mkdir -p dist
-          # DO NOT include --dependency-update here to prevent CI re-fetch errors
+          # Dependency update is explicitly excluded here because it was handled above
           helm package ${{ env.CHART_DIR }} \
             --version "${{ steps.meta.outputs.chart_version }}" \
             --app-version "${{ steps.meta.outputs.app_version }}" \
