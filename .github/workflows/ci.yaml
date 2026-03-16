@@ -117,10 +117,29 @@ jobs:
           helm dependency build "${{ env.CHART_DIR }}"
           ls -lah "${{ env.CHART_DIR }}/charts"
 
-      - name: Verify Helm dependencies exist
+      - name: Verify downloaded dependency archives exist
         run: |
           test -f "${{ env.CHART_DIR }}/charts/postgresql-18.5.6.tgz"
           test -f "${{ env.CHART_DIR }}/charts/redis-25.3.2.tgz"
+
+      - name: Extract dependency charts
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHARTS_DIR="${{ env.CHART_DIR }}/charts"
+
+          for pkg in "$CHARTS_DIR"/*.tgz; do
+            echo "Extracting $pkg"
+            tar -xzf "$pkg" -C "$CHARTS_DIR"
+          done
+
+          echo "Contents after extraction:"
+          ls -lah "$CHARTS_DIR"
+
+      - name: Verify extracted dependency directories exist
+        run: |
+          test -d "${{ env.CHART_DIR }}/charts/postgresql"
+          test -d "${{ env.CHART_DIR }}/charts/redis"
 
       - name: Package Helm chart
         run: |
