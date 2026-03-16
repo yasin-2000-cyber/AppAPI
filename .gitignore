@@ -3,7 +3,7 @@ __pycache__/
 .venv/
 .env
 
-
+charts/firschart/charts/
 # Python
 __pycache__/
 *.pyc
