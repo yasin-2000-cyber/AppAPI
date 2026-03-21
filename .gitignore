@@ -3,7 +3,7 @@ __pycache__/
 .venv/
 .env
 
-
+test-project-info.txt
 # Python
 __pycache__/
 *.pyc
