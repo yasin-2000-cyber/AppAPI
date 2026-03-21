@@ -3,3 +3,40 @@ https://github.com/yasin-2000-cyber/AppAPI.git
 helm push firstchart-$version.tgz oci://registry-1.docker.io/yasin313
 
 oci://registry-1.docker.io/yasin313
+
+
+
+talos vms details
+
+to access the pve hci : 10.0.19.30
+user:yasin@pve
+pass:123qweASD
+
+vms location:
+hc03:talos-test-yasin1
+hc04:talos-test-yasin2
+
+*** IP addresses to be used: 10.0.19.51\10.0.19.52
+Talos iso image are uploaded to vms and ready
+Gateway : 10.0.19.254
+DNS1 : 10.0.30.5
+
+ip=::255.255.255.0::net0:none:
+
+ip=10.0.19.51::10.0.19.254:255.255.255.0:TalosMaster01:nett0:none:10.0.30.5
+
+
+ip=<ip-address>::<gateway>:<netmask>::<interface-name>
+
+
+
+for vault keys:
+vault operator init
+Unseal Key 1: 2XRiSInD09/fKUx4l+001E+xkU8pTeETCy9x8wDJt8KU
+Unseal Key 2: +mWZgQQPA1FjuEFsYwSVNWyZh9G74jCKjRSyacCkPUQE
+Unseal Key 3: V6tyW0NbGIEHipZ62j8iGaXHp0toOD6Wt9UGgYPmkctI
+Unseal Key 4: 6p5gA2dtw5LZ4j1S92B+e7Oq9Ym7KMVQj24GWK5FhHlR
+Unseal Key 5: CAiKR1pbZelaq6sm2dIBGrH+v69CoIeUfMgHykN2sIl4
+
+
+for root access:: hvs.EDckvXpVqSxtgGdilom7zdPD
