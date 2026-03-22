@@ -8,12 +8,18 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "firstchart.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/name: {{ include "firstchart.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        {{- include "firstchart.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/name: {{ include "firstchart.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: appapi
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -26,46 +32,37 @@ spec:
             - name: APP_MESSAGE
               value: {{ .Values.app.message | quote }}
 
-            - name: POSTGRES_HOST
-              value: {{ include "firstchart.postgresqlHost" . | quote }}
-            - name: POSTGRES_PORT
+            - name: DB_HOST
+              value: "{{ .Release.Name }}-postgresql"
+            - name: DB_PORT
               value: "5432"
-            - name: POSTGRES_DB
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "firstchart.fullname" . }}-secret
-                  key: POSTGRES_DB
-            - name: POSTGRES_USER
+            - name: DB_NAME
+              value: {{ .Values.postgresql.auth.database | quote }}
+            - name: DB_USER
               valueFrom:
                 secretKeyRef:
                   name: {{ include "firstchart.fullname" . }}-secret
                   key: POSTGRES_USER
-            - name: POSTGRES_PASSWORD
+            - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ include "firstchart.fullname" . }}-secret
                   key: POSTGRES_PASSWORD
 
             - name: REDIS_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "firstchart.fullname" . }}-secret
-                  key: REDIS_HOST
+              value: "{{ .Release.Name }}-redis-master"
             - name: REDIS_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "firstchart.fullname" . }}-secret
-                  key: REDIS_PORT
+              value: "6379"
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ include "firstchart.fullname" . }}-secret
                   key: REDIS_PASSWORD
-                  optional: true
+
           readinessProbe:
             httpGet:
               path: /health
-              port: 8000
+              port: http
             initialDelaySeconds: 10
             periodSeconds: 10
             timeoutSeconds: 5
@@ -74,10 +71,11 @@ spec:
           livenessProbe:
             httpGet:
               path: /
-              port: 8000
+              port: http
             initialDelaySeconds: 30
             periodSeconds: 20
             timeoutSeconds: 5
             failureThreshold: 3
+
           resources:
-            {{- toYaml .Values.resources | nindent 16 }}
+            {{- toYaml .Values.resources | nindent 12 }}
