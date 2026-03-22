@@ -7,9 +7,10 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   selector:
-    {{- include "firstchart.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/name: {{ include "firstchart.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
   ports:
-    - name: http
-      port: {{ .Values.service.port }}
-      targetPort: http
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
       protocol: TCP
+      name: http
