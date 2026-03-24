@@ -10,7 +10,9 @@ spec:
           - name: app-demo
             path: charts/firstchart
             namespace: app-demo
-          
+          - name: nginx-demo
+            path: charts/nginx
+            namespace: nginx-demo
   template:
     metadata:
       name: '{{name}}'
