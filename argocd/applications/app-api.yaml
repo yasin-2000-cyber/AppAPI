@@ -6,7 +6,7 @@ metadata:
 spec:
   project: main
   source:
-    repoURL: https://github.com/yasin-2000-cyber/test-cluster.git
+    repoURL: https://github.com/yasin-2000-cyber/AppAPI.git
     targetRevision: HEAD
     path: charts/apps/app-api
     helm:

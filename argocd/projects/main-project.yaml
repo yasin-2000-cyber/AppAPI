@@ -6,7 +6,7 @@ metadata:
 spec:
   description: Main project for all cluster apps and infra
   sourceRepos:
-    - "https://github.com/yasin-2000-cyber/test-cluster.git"
+    - "https://github.com/yasin-2000-cyber/AppAPI.git"
   destinations:
     - namespace: "*"
       server: https://kubernetes.default.svc
