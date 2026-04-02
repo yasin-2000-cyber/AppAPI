@@ -1,0 +1,13 @@
+# Helm dependency charts (fetched via helm dep update)
+charts/*/charts/
+charts/infra/*/charts/
+charts/apps/*/charts/
+*.tgz
+
+# Local overrides
+*.local.yaml
+.env
+
+# Kubeconfig
+*.kubeconfig
+kubeconfig

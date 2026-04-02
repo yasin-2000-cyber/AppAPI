@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(KUBECONFIG=/home/yasin/.kube/configs/yasin-tobchi.kubeconfig kubectl get nodes -o wide)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(curl -s https://raw.githubusercontent.com/yasin-2000-cyber/AppAPI/main/app/requirements.txt)",
+      "Bash(curl -s https://raw.githubusercontent.com/yasin-2000-cyber/AppAPI/main/app/Dockerfile)",
+      "Bash(curl -s https://raw.githubusercontent.com/yasin-2000-cyber/AppAPI/main/app/.env.example)"
+    ]
+  }
+}

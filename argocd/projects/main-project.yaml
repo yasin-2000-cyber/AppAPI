@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: main
+  namespace: argocd
+spec:
+  description: Main project for all cluster apps and infra
+  sourceRepos:
+    - "https://github.com/yasin-2000-cyber/test-cluster.git"
+  destinations:
+    - namespace: "*"
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"

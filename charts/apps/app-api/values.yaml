@@ -1,0 +1,46 @@
+replicaCount: 1
+
+image:
+  repository: yasin313/yasin-dev-test
+  tag: "latest"
+  pullPolicy: Always
+
+app:
+  message: "connected successfully"
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+
+ingress:
+  host: app-api.10.0.19.52.nip.io
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 300m
+    memory: 256Mi
+
+# -- PostgreSQL (Bitnami subchart)
+postgresql:
+  enabled: true
+  auth:
+    username: appuser
+    password: apppassword   # Override with a secret in production
+    database: appdb
+  primary:
+    persistence:
+      enabled: false
+
+# -- Redis (Bitnami subchart)
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: false
+  master:
+    persistence:
+      enabled: false

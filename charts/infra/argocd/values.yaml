@@ -1,0 +1,25 @@
+argo-cd:
+  global:
+    nodeSelector:
+      kubernetes.io/hostname: talos-test-yasin2
+
+  server:
+    # Run in insecure mode so nginx ingress handles TLS
+    extraArgs:
+      - --insecure
+
+    service:
+      type: NodePort
+      nodePortHttp: 30080
+      nodePortHttps: 30443
+
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      hostname: argocd.10.0.19.52.nip.io
+      annotations:
+        nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+
+  configs:
+    params:
+      server.insecure: "true"

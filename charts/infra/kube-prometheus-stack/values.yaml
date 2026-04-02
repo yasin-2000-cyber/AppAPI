@@ -1,0 +1,50 @@
+kube-prometheus-stack:
+  # -- Grafana
+  grafana:
+    nodeSelector:
+      kubernetes.io/hostname: talos-test-yasin2
+
+    adminPassword: "changeme"   # Change before going to production
+
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      hosts:
+        - grafana.10.0.19.52.nip.io
+      paths:
+        - /
+
+    persistence:
+      enabled: false
+
+  # -- Prometheus
+  prometheus:
+    prometheusSpec:
+      nodeSelector:
+        kubernetes.io/hostname: talos-test-yasin2
+
+      retention: 7d
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+        limits:
+          cpu: 500m
+          memory: 1Gi
+
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      hosts:
+        - prometheus.10.0.19.52.nip.io
+      paths:
+        - /
+
+  # -- Alertmanager (disabled for test cluster)
+  alertmanager:
+    enabled: false
+
+  # -- Reduce resource usage for test cluster
+  prometheusOperator:
+    nodeSelector:
+      kubernetes.io/hostname: talos-test-yasin2
